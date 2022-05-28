@@ -98,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
         try{
             return jdbcCategoryRepository.insert(category);
         }catch(DaoException e){
-            log.error("Failed to insert category in database", e);
+            log.error("Failed to insert category into database", e);
             throw new ServiceException(e);
         }
     }
@@ -111,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
                 return jdbcCategoryRepository.update(id, category);
             }
             else {
-                log.error(String.format("Failed to find category with id: %s", id));
+                log.error(String.format("Failed to get category with id: %s", id));
                 throw new ResourceNotFoundException("Categories","id",id);
             }
 

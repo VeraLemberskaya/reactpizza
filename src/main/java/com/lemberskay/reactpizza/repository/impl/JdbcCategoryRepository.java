@@ -115,9 +115,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public boolean remove(Category category) throws DaoException {
+    public boolean remove(long id) throws DaoException {
         try {
-            jdbcTemplate.update(DELETE_SQL, category.getId());
+            jdbcTemplate.update(DELETE_SQL, id);
             return true;
         } catch (DataAccessException e) {
             throw new DaoException(e);

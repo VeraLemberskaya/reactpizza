@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 public interface UserRepository extends BaseRepository<User>{
-    public Optional<User> findByEmailAndPassword(String email, String password) throws DaoException;
-    public boolean isUserExistByEmail(String email) throws DaoException;
+    public Optional<User> findByUsername(String username) throws DaoException;
+    public boolean isUserExistByUsername(String username) throws DaoException;
 }

@@ -5,12 +5,20 @@ import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.model.User;
 import com.lemberskay.reactpizza.repository.UserRepository;
 import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
+import com.lemberskay.reactpizza.repository.mapper.RowMapper;
 import com.lemberskay.reactpizza.repository.mapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,36 +26,42 @@ import java.util.Optional;
 public class JdbcUserRepository implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserRowMapper userRowMapper;
+    private final RowMapper<User> userRowMapper;
 
     private final String FIND_ALL_SQL = """
-             SELECT  user, name, email, password FROM users
+            SELECT  user_id, user_name, password, user_role
+            FROM users
             """;
 
     private final String FIND_BY_ID_SQL = """
-            SELECT user_id, name, email, password FROM users WHERE user_id = ?
+            SELECT user_id, user_name, password, user_role
+            FROM users
+            WHERE user_id = ?
             """;
     private final String INSERT_SQL = """
-             INSERT into users (email, password, name) VALUES (?, ?, ?)
+            INSERT into users ( user_name, password, user_role)
+            VALUES (?, ?, ?)
             """;
     private final String DELETE_SQL = """
              DELETE FROM users WHERE user_id = ?
             """;
     private final String UPDATE_SQL = """
-            UPDATE users SET email = ?, password = ?, name = ? WHERE user_id = ?
+            UPDATE users SET user_name = ?, password = ?, user_role = ? WHERE user_id = ?
             """;
 
-    private final String FIND_BY_EMAIL_AND_PASSWORD_SQL = """
-            SELECT user_id, name, email, password FROM users WHERE email = ? AND password = ?
+    private final String FIND_BY_USERNAME_SQL = """
+            SELECT user_id, user_name, password, user_role
+            FROM users
+            WHERE user_name = ?
             """;
-    private static final String SELECT_EXISTS_BY_EMAIL = """
-             SELECT EXISTS (SELECT email FROM users WHERE email = ?)
+    private static final String SELECT_EXISTS_BY_USERNAME_SQL = """
+             SELECT EXISTS (SELECT user_name FROM users WHERE user_name = ?)
             """;
 
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate, RowMapper<User> userRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        userRowMapper = new UserRowMapper();
+        this.userRowMapper = userRowMapper;
     }
 
     @Override
@@ -65,7 +79,25 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User insert(User user) throws DaoException {
         try {
-            jdbcTemplate.update(INSERT_SQL, user.getEmail(), user.getPassword(), user.getName());
+            final PreparedStatementCreator psc = new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                    final PreparedStatement ps = connection.prepareStatement( INSERT_SQL,
+                            Statement.RETURN_GENERATED_KEYS);
+
+                    ps.setString(1, user.getLogin());
+                    ps.setString(2, user.getPassword());
+                    ps.setString(3, user.getRole().toString());
+
+                    return ps;
+                }
+            };
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(psc, keyHolder);
+
+            long insertedId = keyHolder.getKey().longValue();
+            user.setId(insertedId);
             return user;
         } catch (DataAccessException e) {
             throw new DaoException(e);
@@ -73,10 +105,10 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean remove(User user) throws DaoException {
+    public boolean remove(long id) throws DaoException {
         try {
-            jdbcTemplate.update(DELETE_SQL, user.getId());
-            return true;
+            int result = jdbcTemplate.update(DELETE_SQL, id);
+            return result!=0;
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
@@ -94,7 +126,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User update(long id, User user) throws DaoException {
         try {
-            jdbcTemplate.update(UPDATE_SQL, user.getEmail(), user.getPassword(), user.getName(), id);
+            jdbcTemplate.update(UPDATE_SQL, user.getLogin(), user.getPassword(), user.getRole(), id);
             return user;
         } catch (DataAccessException e) {
             throw new DaoException(e);
@@ -102,9 +134,9 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByEmailAndPassword(String email, String password) throws DaoException {
+    public Optional<User> findByUsername(String username) throws DaoException {
         try {
-            List<User> result = jdbcTemplate.query(FIND_BY_EMAIL_AND_PASSWORD_SQL, this.userRowMapper::mapRow, email, password);
+            List<User> result = jdbcTemplate.query(FIND_BY_USERNAME_SQL, this.userRowMapper::mapRow, username);
             return result.size() == 0 ?
                     Optional.empty() :
                     Optional.of(result.get(0));
@@ -114,9 +146,9 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean isUserExistByEmail(String email) throws DaoException {
+    public boolean isUserExistByUsername(String username) throws DaoException {
         try{
-            return jdbcTemplate.queryForObject(SELECT_EXISTS_BY_EMAIL, Boolean.class, email);
+            return jdbcTemplate.queryForObject(SELECT_EXISTS_BY_USERNAME_SQL, Boolean.class, username);
         }catch(DataAccessException e){
             throw new DaoException(e);
         }

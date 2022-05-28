@@ -60,9 +60,9 @@ public class JdbcCountryRepository implements CountryRepository {
     }
 
     @Override
-    public boolean remove(Country country) throws DaoException {
+    public boolean remove(long id) throws DaoException {
         try{
-            jdbcTemplate.update(DELETE_SQL,country.getId());
+            jdbcTemplate.update(DELETE_SQL,id);
             return true;
         }catch( DataAccessException e){
             throw new DaoException(e);

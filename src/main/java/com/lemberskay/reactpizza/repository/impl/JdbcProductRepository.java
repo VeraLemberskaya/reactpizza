@@ -94,9 +94,9 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public boolean remove(Product product) throws DaoException {
+    public boolean remove(long id) throws DaoException {
         try{
-            jdbcTemplate.update(DELETE_SQL,product.getId());
+            jdbcTemplate.update(DELETE_SQL,id);
             return true;
         }catch( DataAccessException e){
             throw new DaoException(e);

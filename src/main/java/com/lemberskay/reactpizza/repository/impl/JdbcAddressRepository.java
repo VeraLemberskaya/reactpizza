@@ -59,9 +59,9 @@ public class JdbcAddressRepository implements AddressRepository {
     }
 
     @Override
-    public boolean remove(Address address) throws DaoException {
+    public boolean remove(long id) throws DaoException {
         try{
-            jdbcTemplate.update(DELETE_SQL,address.getId());
+            jdbcTemplate.update(DELETE_SQL,id);
             return true;
         }catch( DataAccessException e){
             throw new DaoException(e);
