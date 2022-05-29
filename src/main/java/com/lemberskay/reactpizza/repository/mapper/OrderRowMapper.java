@@ -35,7 +35,6 @@ public class OrderRowMapper implements ResultSetExtractor<List<Order>> {
         while (rs.next()){
             Long orderId = rs.getLong(ORDER_ID);
             LocalDate orderDate = rs.getDate(ORDER_DATE).toLocalDate();
-            long orderUserId = rs.getLong(USER_ID);
             Address orderAddress = addressRowMapper.mapRow(rs,0);
             MenuItem menuItem = menuItemRowMapper.mapRow(rs,0);
             int menuItemQuantity = rs.getInt(ORDER_MENU_ITEM_QUANTITY);
@@ -44,7 +43,6 @@ public class OrderRowMapper implements ResultSetExtractor<List<Order>> {
                 order = Order.builder()
                         .id(orderId)
                         .date(orderDate)
-                        .userId(orderUserId)
                         .address(orderAddress)
                         .orderedItems(new ArrayList<>())
                         .build();

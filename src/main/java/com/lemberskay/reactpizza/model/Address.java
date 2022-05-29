@@ -16,5 +16,6 @@ public class Address extends AbstractEntity{
     private int streetNumber;
     private String city;
     private Country country;
+    private long userId;
 
 }

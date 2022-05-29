@@ -21,7 +21,6 @@ public class Order extends AbstractEntity{
 
     private LocalDate date;
     private Address address;
-    private long userId;
     private List<OrderedItem> orderedItems;
 
 //    public Order(){

@@ -19,8 +19,8 @@ public class JdbcOrderRepository implements OrderRepository {
     private final OrderRowMapper orderRowMapper;
 
     private final String FIND_ALL_SQL = """
-           SELECT o.order_id,o.user_id,o.order_date, 
-           a.address_id, a.street_name, a.street_number, a.city,
+           SELECT o.order_id,o.order_date, 
+           a.address_id,a.user_id, a.street_name, a.street_number, a.city,
            c.country_id, c.name as country_name,
            m.menu_item_id,m.price,m.description,m.name as menu_item_name,m.img as menu_item_img,m.rating,m.category_id,
            om.quantity 
@@ -32,8 +32,8 @@ public class JdbcOrderRepository implements OrderRepository {
            """;
 
     private final String FIND_BY_ID_SQL = """
-           SELECT o.order_id,o.user_id,o.order_date, 
-           a.address_id, a.street_name, a.street_number, a.city,
+           SELECT o.order_id,o.order_date, 
+           a.address_id,a.user_id, a.street_name, a.street_number, a.city,
            c.country_id, c.name as country_name,
            m.menu_item_id,m.price,m.description,m.name as menu_item_name,m.img as menu_item_img,m.rating,m.category_id,
            om.quantity 
@@ -46,8 +46,8 @@ public class JdbcOrderRepository implements OrderRepository {
            """;
 
     private final String FIND_BY_USER_ID_SQL = """
-           SELECT o.order_id,o.user_id,o.order_date, 
-           a.address_id, a.street_name, a.street_number, a.city,
+           SELECT o.order_id,o.order_date, 
+           a.address_id,a.user_id, a.street_name, a.street_number, a.city,
            c.country_id, c.name as country_name,
            m.menu_item_id,m.price,m.description,m.name as menu_item_name,m.img as menu_item_img,m.rating,m.category_id,
            om.quantity 
@@ -56,7 +56,7 @@ public class JdbcOrderRepository implements OrderRepository {
            INNER JOIN countries as c ON a.country_id = c.country_id 
            INNER JOIN order_menu_item as om ON o.order_id = om.order_id
            INNER JOIN menu_items as m ON m.menu_item_id = om.menu_item_id
-           WHERE o.user_id = ?
+           WHERE a.user_id = ?
            """;
 
     public JdbcOrderRepository(JdbcTemplate jdbcTemplate, OrderRowMapper orderRowMapper){

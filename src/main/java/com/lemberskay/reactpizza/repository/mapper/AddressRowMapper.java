@@ -24,6 +24,7 @@ public class AddressRowMapper implements RowMapper<Address> {
                 .id(row.getLong(ADDRESS_ID))
                 .streetName(row.getString(ADDRESS_STREET_NAME))
                 .streetNumber(row.getInt(ADDRESS_STREET_NUMBER))
+                .userId(row.getLong(USER_ID))
                 .city(row.getString(ADDRESS_CITY))
                 .country(countryRowMapper.mapRow(row,rowNum))
                 .build();

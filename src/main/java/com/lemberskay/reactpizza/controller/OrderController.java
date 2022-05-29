@@ -6,6 +6,7 @@ import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.model.MenuItem;
 import com.lemberskay.reactpizza.model.Order;
 import com.lemberskay.reactpizza.service.OrderService;
+import com.lemberskay.reactpizza.util.UserEncoder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,7 @@ public class OrderController {
 
     @GetMapping("/user")
     public List<Order> getOrdersByUser(@RequestHeader("Authorization") String authorization) throws ResourceNotFoundException, ServiceException {
-        String usernameAndPassword = new String(Base64.decodeBase64(authorization.substring(6)));
-        String userName = usernameAndPassword.split(":")[0];
+        String userName = UserEncoder.getUserName(authorization);
         return orderService.getOrdersByUser(userName);
     }
 }
