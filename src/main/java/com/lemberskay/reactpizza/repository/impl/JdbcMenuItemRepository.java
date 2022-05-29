@@ -1,9 +1,9 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Product;
+import com.lemberskay.reactpizza.model.MenuItem;
 import com.lemberskay.reactpizza.repository.ProductRepository;
-import com.lemberskay.reactpizza.repository.mapper.ProductRowMapper;
+import com.lemberskay.reactpizza.repository.mapper.MenuItemRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -19,39 +19,46 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class JdbcProductRepository implements ProductRepository {
+public class JdbcMenuItemRepository implements ProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final ProductRowMapper productRowMapper;
+    private final MenuItemRowMapper productRowMapper;
 
     private final String FIND_ALL_SQL = """ 
-            SELECT p.product_id, p.name, p.description, p.price, p.img, p.rating, p.category_id FROM products AS p;
+            SELECT menu_item_id,name as menu_item_name, description, price, img as menu_item_img, rating, category_id
+            FROM menu_items
             """;
     private final String FIND_BY_ID_SQL = """
-            SELECT p.product_id, p.name, p.description, p.price, p.img, p.rating, p.category_id FROM products AS p WHERE p.product_id = ?;
+            SELECT menu_item_id,name as menu_item_name, description, price, img as menu_item_img, rating, category_id
+            FROM menu_items
+            WHERE menu_item_id = ?
             """;
     private final String INSERT_SQL = """
-            INSERT INTO products (price, description, name, img, rating, category_id) VALUES (?, ?, ?, ?, ?, ?);
+            INSERT INTO menu_items (price, description, name, img, rating, category_id) VALUES (?, ?, ?, ?, ?, ?);
             """;
     private final String UPDATE_SQL = """
-            UPDATE products SET name = ?, price = ?, description = ?, img = ?, rating = ?, category_id = ?  WHERE product_id = ?
+            UPDATE menu_items SET name = ?, price = ?, description = ?, img = ?, rating = ?, category_id = ?
+            WHERE menu_item_id = ?
             """;
     private final String DELETE_SQL = """
-            DELETE FROM products WHERE product_id = ?
+            DELETE FROM menu_items
+            WHERE menu_item_id_id = ?
             """;
 
     private final String FIND_ALL_BY_CATEGORY_SQL = """
-             SELECT p.product_id, p.name, p.description, p.price, p.img, p.rating, p.category_id FROM products AS p WHERE p.category_id = ?;
+            SELECT menu_item_id,name as menu_item_name, description, price, img as menu_item_img, rating, category_id
+            FROM menu_items
+            WHERE category_id = ?
             """;
 
-    public JdbcProductRepository(JdbcTemplate jdbcTemplate){
+    public JdbcMenuItemRepository(JdbcTemplate jdbcTemplate, MenuItemRowMapper menuItemRowMapper){
         this.jdbcTemplate = jdbcTemplate;
-        this.productRowMapper = new ProductRowMapper();
+        this.productRowMapper = menuItemRowMapper;
     }
     @Override
-    public Optional<Product> findById(long id) throws DaoException {
+    public Optional<MenuItem> findById(long id) throws DaoException {
         try {
-            List<Product> result = jdbcTemplate.query(FIND_BY_ID_SQL, this.productRowMapper::mapRow, id);
+            List<MenuItem> result = jdbcTemplate.query(FIND_BY_ID_SQL, this.productRowMapper::mapRow, id);
             return result.size() == 0 ?
                     Optional.empty() :
                     Optional.of(result.get(0));
@@ -61,7 +68,7 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product insert(Product product) throws DaoException {
+    public MenuItem insert(MenuItem product) throws DaoException {
         try{
             final PreparedStatementCreator psc = new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -86,8 +93,7 @@ public class JdbcProductRepository implements ProductRepository {
             long insertedId = keyHolder.getKey().longValue();
             product.setId(insertedId);
             return product;
-//            jdbcTemplate.update(INSERT_SQL,product.getPrice(), product.getDescription(), product.getName(), product.getImgURL(), product.getRating(), product.getCategoryId());
-//            return product;
+
         }catch (DataAccessException e){
             throw new DaoException(e);
         }
@@ -104,7 +110,7 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findAll() throws DaoException {
+    public List<MenuItem> findAll() throws DaoException {
         try {
             return jdbcTemplate.query(FIND_ALL_SQL, this.productRowMapper::mapRow);
         } catch (DataAccessException e) {
@@ -114,7 +120,7 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product update(long id, Product product) throws DaoException {
+    public MenuItem update(long id, MenuItem product) throws DaoException {
         try{
             jdbcTemplate.update(UPDATE_SQL, product.getName(), product.getPrice(), product.getDescription(), product.getImgURL(), product.getRating(), product.getCategoryId(), id);
             return product;
@@ -124,7 +130,7 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findProductsByCategory(long categoryId) throws DaoException {
+    public List<MenuItem> findProductsByCategory(long categoryId) throws DaoException {
         try {
             return jdbcTemplate.query(FIND_ALL_BY_CATEGORY_SQL, this.productRowMapper::mapRow,categoryId);
         } catch (DataAccessException e) {

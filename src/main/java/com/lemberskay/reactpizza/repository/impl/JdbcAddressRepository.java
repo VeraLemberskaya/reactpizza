@@ -1,9 +1,7 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.AbstractEntity;
 import com.lemberskay.reactpizza.model.Address;
-import com.lemberskay.reactpizza.model.Product;
 import com.lemberskay.reactpizza.repository.AddressRepository;
 import com.lemberskay.reactpizza.repository.mapper.AddressRowMapper;
 import org.springframework.dao.DataAccessException;

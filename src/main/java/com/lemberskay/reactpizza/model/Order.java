@@ -15,7 +15,7 @@ public class Order extends AbstractEntity{
     private LocalDateTime date;
     private Address address;
     private User user;
-    private List<Product> products;
+    private List<MenuItem> products;
 
     public Order(){
         super();
@@ -30,12 +30,12 @@ public class Order extends AbstractEntity{
         this.products = new ArrayList<>();
     }
 
-    public Order(long id, Address address, User user, List<Product> products){
+    public Order(long id, Address address, User user, List<MenuItem> products){
         this(id, address, user);
         this.products = products;
     }
 
-    public void addProduct(Product product){
+    public void addProduct(MenuItem product){
         products.add(product);
     }
 

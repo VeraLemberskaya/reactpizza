@@ -1,16 +1,14 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.model.User;
 import com.lemberskay.reactpizza.repository.UserRepository;
-import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
-import com.lemberskay.reactpizza.repository.mapper.RowMapper;
 import com.lemberskay.reactpizza.repository.mapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -26,7 +24,7 @@ import java.util.Optional;
 public class JdbcUserRepository implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<User> userRowMapper;
+    private final UserRowMapper userRowMapper;
 
     private final String FIND_ALL_SQL = """
             SELECT  user_id, user_name, password, user_role
@@ -43,10 +41,12 @@ public class JdbcUserRepository implements UserRepository {
             VALUES (?, ?, ?)
             """;
     private final String DELETE_SQL = """
-             DELETE FROM users WHERE user_id = ?
+             DELETE FROM users
+            WHERE user_id = ?
             """;
     private final String UPDATE_SQL = """
-            UPDATE users SET user_name = ?, password = ?, user_role = ? WHERE user_id = ?
+            UPDATE users SET user_name = ?, password = ?, user_role = ?
+            WHERE user_id = ?
             """;
 
     private final String FIND_BY_USERNAME_SQL = """
@@ -58,8 +58,7 @@ public class JdbcUserRepository implements UserRepository {
              SELECT EXISTS (SELECT user_name FROM users WHERE user_name = ?)
             """;
 
-    @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, RowMapper<User> userRowMapper) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.userRowMapper = userRowMapper;
     }

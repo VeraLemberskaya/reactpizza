@@ -3,13 +3,11 @@ package com.lemberskay.reactpizza.service.impl;
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.Product;
+import com.lemberskay.reactpizza.model.MenuItem;
 import com.lemberskay.reactpizza.repository.impl.JdbcCategoryRepository;
-import com.lemberskay.reactpizza.repository.impl.JdbcProductRepository;
-import com.lemberskay.reactpizza.service.ProductService;
+import com.lemberskay.reactpizza.repository.impl.JdbcMenuItemRepository;
+import com.lemberskay.reactpizza.service.MenuItemService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,18 +15,18 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class ProductServiceImpl implements ProductService {
+public class MenuItemServiceImpl implements MenuItemService {
 
-    private JdbcProductRepository jdbcProductRepository;
+    private JdbcMenuItemRepository jdbcProductRepository;
     private JdbcCategoryRepository jdbcCategoryRepository;
 
-    public ProductServiceImpl(JdbcProductRepository jdbcProductRepository, JdbcCategoryRepository jdbcCategoryRepository){
+    public MenuItemServiceImpl(JdbcMenuItemRepository jdbcProductRepository, JdbcCategoryRepository jdbcCategoryRepository){
         this.jdbcProductRepository = jdbcProductRepository;
         this.jdbcCategoryRepository = jdbcCategoryRepository;
     }
 
     @Override
-    public List<Product> getAllProducts() throws ServiceException {
+    public List<MenuItem> getAllProducts() throws ServiceException {
         try{
             return jdbcProductRepository.findAll();
         } catch ( DaoException e){
@@ -38,9 +36,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(long id) throws ServiceException {
+    public MenuItem getProductById(long id) throws ServiceException {
         try{
-            Optional<Product> optionalProduct = jdbcProductRepository.findById(id);
+            Optional<MenuItem> optionalProduct = jdbcProductRepository.findById(id);
             if(optionalProduct.isPresent()){
                 return optionalProduct.get();
             }
@@ -55,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByCategory(long categoryId) throws ServiceException {
+    public List<MenuItem> getProductsByCategory(long categoryId) throws ServiceException {
         try{
             //to do
             // check id the category exists and throe resource not found exception
@@ -73,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product) throws ServiceException {
+    public MenuItem createProduct(MenuItem product) throws ServiceException {
         try{
             return jdbcProductRepository.insert(product);
         }catch(DaoException e){
@@ -83,9 +81,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(long id, Product product) throws ServiceException {
+    public MenuItem updateProduct(long id, MenuItem product) throws ServiceException {
         try{
-            Optional<Product> optionalCategory = jdbcProductRepository.findById(id);
+            Optional<MenuItem> optionalCategory = jdbcProductRepository.findById(id);
             if(optionalCategory.isPresent()){
                 return jdbcProductRepository.update(id, product);
             }

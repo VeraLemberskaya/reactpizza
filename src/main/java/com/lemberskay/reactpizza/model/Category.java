@@ -2,16 +2,18 @@ package com.lemberskay.reactpizza.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@SuperBuilder
 public class Category extends AbstractEntity{
     private String name;
     private String imgURL;
-    private List<Product> products;
+    private List<MenuItem> products;
 
     public Category(){
         super();
@@ -25,7 +27,7 @@ public class Category extends AbstractEntity{
         products = new ArrayList<>();
     }
 
-    public void addProduct(Product product){
+    public void addProduct(MenuItem product){
         products.add(product);
     }
 }

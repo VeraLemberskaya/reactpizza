@@ -2,15 +2,14 @@ package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.Product;
 import com.lemberskay.reactpizza.repository.CategoryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
-import com.lemberskay.reactpizza.repository.mapper.ProductRowMapper;
+import com.mysql.cj.result.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -27,14 +26,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
     private final CategoryRowMapper categoryRowMapper;
 
     private final String FIND_ALL_SQL = """
-            SELECT p.product_id, p.name, p.description, p.price, p.img, p.rating, c.category_id, c.name as category_name, c.img as category_img FROM products AS p INNER JOIN categories as c ON p.category_id = c.category_id;
+            SELECT m.menu_item_id, m.name as menu_item_name, m.description, m.price, m.img as menu_item_img, m.rating, c.category_id, c.name as category_name, c.img as category_img
+            FROM menu_items AS m
+            RIGHT JOIN categories as c ON m.category_id = c.category_id;
               """;
     private final String FIND_BY_ID_SQL = """
-            SELECT p.product_id, p.name, p.description, p.price, p.img, p.rating, c.category_id, c.name as category_name, c.img as category_img FROM products AS p RIGHT JOIN categories as c ON p.category_id = c.category_id WHERE c.category_id = ?;
-            """;
+           SELECT m.menu_item_id, m.name as menu_item_name, m.description, m.price, m.img as menu_item_img, m.rating, c.category_id, c.name as category_name, c.img as category_img
+            FROM menu_items AS m
+            RIGHT JOIN categories as c ON m.category_id = c.category_id
+            WHERE c.category_id = ?;
+             """;
     private final String FIND_BY_NAME_SQL = """
-            SELECT category_id, name, img FROM categories WHERE category_name = ?
-            """;
+           SELECT m.menu_item_id, m.name as menu_item_name, m.description, m.price, m.img as menu_item_img, m.rating, c.category_id, c.name as category_name, c.img as category_img
+            FROM menu_items AS m
+            RIGHT JOIN categories as c ON m.category_id = c.category_id
+            WHERE c.category_name = ?;
+           """;
     private final String INSERT_SQL = """
             INSERT into categories (name, img) VALUES (?, ?)
             """;
@@ -50,15 +57,15 @@ public class JdbcCategoryRepository implements CategoryRepository {
             """;
 
     @Autowired
-    public JdbcCategoryRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcCategoryRepository(JdbcTemplate jdbcTemplate, CategoryRowMapper categoryRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.categoryRowMapper = new CategoryRowMapper();
+        this.categoryRowMapper = categoryRowMapper;
     }
 
     @Override
     public List<Category> findAll() throws DaoException {
         try {
-            return jdbcTemplate.query(FIND_ALL_SQL, this.categoryRowMapper::mapRows);
+            return jdbcTemplate.query(FIND_ALL_SQL, this.categoryRowMapper::extractData);
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
@@ -78,7 +85,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     @Override
     public Optional<Category> findById(long id) throws DaoException {
         try {
-            List<Category> result = jdbcTemplate.query(FIND_BY_ID_SQL, this.categoryRowMapper::mapRows, id);
+            List<Category> result = jdbcTemplate.query(FIND_BY_ID_SQL, this.categoryRowMapper::extractData, id);
             return result.size() == 0 ?
                     Optional.empty() :
                     Optional.of(result.get(0));
@@ -127,7 +134,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     @Override
     public Optional<Category> findByName(String name) throws DaoException {
         try {
-            List<Category> result = jdbcTemplate.query(FIND_BY_NAME_SQL, this.categoryRowMapper::mapRows, name);
+            List<Category> result = jdbcTemplate.query(FIND_BY_NAME_SQL, this.categoryRowMapper::extractData, name);
             return result.size() == 0 ?
                     Optional.empty() :
                     Optional.of(result.get(0));
