@@ -2,7 +2,7 @@ package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.MenuItem;
-import com.lemberskay.reactpizza.repository.ProductRepository;
+import com.lemberskay.reactpizza.repository.MenuItemRepository;
 import com.lemberskay.reactpizza.repository.mapper.MenuItemRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class JdbcMenuItemRepository implements ProductRepository {
+public class JdbcMenuItemRepository implements MenuItemRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final MenuItemRowMapper productRowMapper;
@@ -102,8 +102,8 @@ public class JdbcMenuItemRepository implements ProductRepository {
     @Override
     public boolean remove(long id) throws DaoException {
         try{
-            jdbcTemplate.update(DELETE_SQL,id);
-            return true;
+            int result = jdbcTemplate.update(DELETE_SQL,id);
+            return result!=0;
         }catch( DataAccessException e){
             throw new DaoException(e);
         }

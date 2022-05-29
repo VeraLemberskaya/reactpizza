@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
         try{
         return jdbcCategoryRepository.findAll();
         } catch (DaoException e){
-            log.error("Failed to get categories", e);
+            log.error("Failed to get categories from database", e);
             throw new ServiceException(e);
         }
 

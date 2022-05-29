@@ -7,26 +7,43 @@ import com.lemberskay.reactpizza.repository.CountryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CountryRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JdbcCountryRepository implements CountryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final CountryRowMapper countryRowMapper;
 
-    private JdbcCountryRepository(JdbcTemplate jdbcTemplate){
+    public JdbcCountryRepository(JdbcTemplate jdbcTemplate, CountryRowMapper countryRowMapper){
         this.jdbcTemplate = jdbcTemplate;
-        countryRowMapper = new CountryRowMapper();
+        this.countryRowMapper = countryRowMapper;
     }
 
     private final String FIND_ALL_SQL = """
-            SELECT  country_id, name, img FROM countries
+            SELECT  country_id, name as country_name
+            FROM countries
             """;
     private final String FIND_BY_ID_SQL = """
-            SELECT country_id, name, FROM categories FROM countries WHERE country_id = ?
+            SELECT country_id, name as country_name
+            FROM countries
+            WHERE country_id = ?
+            """;
+    private final String FIND_BY_COUNTRY_NAME = """
+            SELECT country_id, name as country_name
+            FROM countries
+            WHERE name = ?
             """;
     private final String INSERT_SQL = """
             INSERT into countries (name) VALUES (?)
@@ -52,7 +69,23 @@ public class JdbcCountryRepository implements CountryRepository {
     @Override
     public Country insert(Country country) throws DaoException {
         try{
-            jdbcTemplate.update(INSERT_SQL, country.getName());
+            final PreparedStatementCreator psc = new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                    final PreparedStatement ps = connection.prepareStatement( INSERT_SQL,
+                            Statement.RETURN_GENERATED_KEYS);
+
+                    ps.setString(1, country.getName());
+
+                    return ps;
+                }
+            };
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(psc, keyHolder);
+
+            long insertedId = keyHolder.getKey().longValue();
+            country.setId(insertedId);
             return country;
         }catch (DataAccessException e){
             throw new DaoException(e);
@@ -62,8 +95,8 @@ public class JdbcCountryRepository implements CountryRepository {
     @Override
     public boolean remove(long id) throws DaoException {
         try{
-            jdbcTemplate.update(DELETE_SQL,id);
-            return true;
+            int result = jdbcTemplate.update(DELETE_SQL,id);
+            return result!=0;
         }catch( DataAccessException e){
             throw new DaoException(e);
         }
@@ -84,6 +117,18 @@ public class JdbcCountryRepository implements CountryRepository {
             jdbcTemplate.update(UPDATE_SQL, country.getName(), id);
             return country;
         } catch (DataAccessException e){
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public Optional<Country> findByCountryName(String countryName) throws DaoException {
+        try {
+            List<Country> result = jdbcTemplate.query(FIND_BY_COUNTRY_NAME, this.countryRowMapper::mapRow, countryName);
+            return result.size() == 0 ?
+                    Optional.empty() :
+                    Optional.of(result.get(0));
+        } catch (DataAccessException e) {
             throw new DaoException(e);
         }
     }

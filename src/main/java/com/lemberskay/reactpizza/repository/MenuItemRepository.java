@@ -5,6 +5,6 @@ import com.lemberskay.reactpizza.model.MenuItem;
 
 import java.util.List;
 
-public interface ProductRepository extends BaseRepository<MenuItem>{
+public interface MenuItemRepository extends BaseRepository<MenuItem>{
     List<MenuItem> findProductsByCategory(long category_id) throws DaoException;
 }

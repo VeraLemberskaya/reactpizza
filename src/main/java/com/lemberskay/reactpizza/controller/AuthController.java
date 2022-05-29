@@ -1,5 +1,6 @@
 package com.lemberskay.reactpizza.controller;
 
+import com.lemberskay.reactpizza.exception.AlreadyExistsException;
 import com.lemberskay.reactpizza.exception.ServiceException;
 import com.lemberskay.reactpizza.model.User;
 import com.lemberskay.reactpizza.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,10 +24,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Boolean> processRegistration(@RequestBody User user) throws ServiceException {
+    public ResponseEntity<Boolean> processRegistration(@RequestBody User user) throws AlreadyExistsException, ServiceException {
         boolean isRegistered = true;
         User registeredUser = userService.createUser(user);
-        if(registeredUser==null) isRegistered = false;
         return new ResponseEntity<>(isRegistered, HttpStatus.CREATED);
     }
 }

@@ -4,12 +4,9 @@ import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.repository.CategoryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
-import com.mysql.cj.result.Row;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -56,7 +53,6 @@ public class JdbcCategoryRepository implements CategoryRepository {
               SELECT EXISTS (SELECT category_id FROM categories WHERE category_id = ?)
             """;
 
-    @Autowired
     public JdbcCategoryRepository(JdbcTemplate jdbcTemplate, CategoryRowMapper categoryRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.categoryRowMapper = categoryRowMapper;
@@ -124,8 +120,8 @@ public class JdbcCategoryRepository implements CategoryRepository {
     @Override
     public boolean remove(long id) throws DaoException {
         try {
-            jdbcTemplate.update(DELETE_SQL, id);
-            return true;
+            int result = jdbcTemplate.update(DELETE_SQL, id);
+            return result!=0;
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }

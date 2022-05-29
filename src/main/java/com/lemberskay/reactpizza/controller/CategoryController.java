@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService){
         this.categoryService = categoryService;
@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     @PostMapping()
-    public Category createCategory(@Valid @RequestBody Category category)  throws ServiceException, ResourceNotFoundException{
+    public Category createCategory(@Valid @RequestBody Category category)  throws ServiceException{
             return categoryService.createCategory(category);
     }
 

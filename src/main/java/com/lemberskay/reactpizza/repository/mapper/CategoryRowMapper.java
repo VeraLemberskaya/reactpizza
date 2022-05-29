@@ -32,7 +32,7 @@ public class CategoryRowMapper implements ResultSetExtractor<List<Category>> {
             Long categoryId = rs.getLong(CATEGORY_ID);
             String categoryName = rs.getString(CATEGORY_NAME);
             String categoryImgURL = rs.getString(CATEGORY_IMG_URL);
-            MenuItem product = menuItemRowMapper.mapRow(rs,0);
+            MenuItem menuItem = menuItemRowMapper.mapRow(rs,0);
             Category category = categoriesById.get(categoryId);
             if (category == null) {
                 category = Category.builder()
@@ -43,7 +43,7 @@ public class CategoryRowMapper implements ResultSetExtractor<List<Category>> {
                         .build();
                 categoriesById.put(category.getId(), category);
             }
-            if(product!=null)category.addProduct(product);
+            if(menuItem!=null)category.addProduct(menuItem);
         }
         return new ArrayList<>(categoriesById.values());
     }

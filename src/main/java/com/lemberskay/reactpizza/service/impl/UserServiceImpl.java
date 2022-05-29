@@ -1,5 +1,6 @@
 package com.lemberskay.reactpizza.service.impl;
 
+import com.lemberskay.reactpizza.exception.AlreadyExistsException;
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
@@ -74,7 +75,9 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) throws ServiceException {
         try{
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(user.getUsername());
-           if(optionalUser.isPresent()) return null;
+           if(optionalUser.isPresent()) {
+               throw new AlreadyExistsException("User", "username", user.getUsername());
+           }
            user.setRole(User.Role.ROLE_USER);
            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
            return jdbcUserRepository.insert(user);

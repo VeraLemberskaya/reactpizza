@@ -21,5 +21,20 @@ public final class ColumnName {
     public static final String USER_PASSWORD = "password";
     public static final String USER_ROLE = "user_role";
 
+    //COUNTRY
+    public static final String COUNTRY_ID = "country_id";
+    public static final String COUNTRY_NAME = "country_name";
+
+    //ADDRESS
+    public static final String ADDRESS_ID = "address_id";
+    public static final String ADDRESS_STREET_NAME = "street_name";
+    public static final String ADDRESS_STREET_NUMBER = "street_number";
+    public static final String ADDRESS_CITY = "city";
+
+    //ORDER
+    public  static final String ORDER_ID = "order_id";
+    public static final String ORDER_DATE = "order_date";
+    public static final String ORDER_MENU_ITEM_QUANTITY = "quantity";
+
     private ColumnName(){}
 }

@@ -21,7 +21,6 @@ public class User extends AbstractEntity implements UserDetails {
     @Email
     private String login;
     private String password;
-
     private Role role;
 
     public enum Role {
