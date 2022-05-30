@@ -4,6 +4,7 @@ import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.User;
 import com.lemberskay.reactpizza.repository.UserRepository;
 import com.lemberskay.reactpizza.repository.mapper.UserRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -41,7 +44,7 @@ public class JdbcUserRepository implements UserRepository {
             VALUES (?, ?, ?)
             """;
     private final String DELETE_SQL = """
-             DELETE FROM users
+            DELETE FROM users
             WHERE user_id = ?
             """;
     private final String UPDATE_SQL = """
@@ -76,7 +79,7 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public User insert(User user) throws DaoException {
+    public User insert(@NotNull User user) throws DaoException {
         try {
             final PreparedStatementCreator psc = new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -123,9 +126,10 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public User update(long id, User user) throws DaoException {
+    public User update(long id, @NotNull User user) throws DaoException {
         try {
             jdbcTemplate.update(UPDATE_SQL, user.getLogin(), user.getPassword(), user.getRole(), id);
+            user.setId(id);
             return user;
         } catch (DataAccessException e) {
             throw new DaoException(e);

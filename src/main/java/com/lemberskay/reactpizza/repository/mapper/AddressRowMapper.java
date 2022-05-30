@@ -13,11 +13,11 @@ import static com.lemberskay.reactpizza.repository.mapper.ColumnName.*;
 @Component
 public class AddressRowMapper implements RowMapper<Address> {
 
-    private final CountryRowMapper countryRowMapper;
-
-    private AddressRowMapper(CountryRowMapper countryRowMapper){
-        this.countryRowMapper = countryRowMapper;
-    }
+//    private final CountryRowMapper countryRowMapper;
+//
+//    private AddressRowMapper(CountryRowMapper countryRowMapper){
+//        this.countryRowMapper = countryRowMapper;
+//    }
     @Override
     public Address mapRow(ResultSet row, int rowNum) throws SQLException {
         return Address.builder()
@@ -26,7 +26,7 @@ public class AddressRowMapper implements RowMapper<Address> {
                 .streetNumber(row.getInt(ADDRESS_STREET_NUMBER))
                 .userId(row.getLong(USER_ID))
                 .city(row.getString(ADDRESS_CITY))
-                .country(countryRowMapper.mapRow(row,rowNum))
+                .countryId(row.getLong(COUNTRY_ID))
                 .build();
     }
 }

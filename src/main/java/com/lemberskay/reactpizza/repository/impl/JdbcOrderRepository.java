@@ -8,11 +8,13 @@ import com.lemberskay.reactpizza.repository.mapper.OrderRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcOrderRepository implements OrderRepository {
 
     private final JdbcTemplate jdbcTemplate;

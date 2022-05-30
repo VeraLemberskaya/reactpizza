@@ -5,12 +5,14 @@ import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.model.Country;
 import com.lemberskay.reactpizza.repository.CountryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CountryRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcCountryRepository implements CountryRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -67,7 +70,7 @@ public class JdbcCountryRepository implements CountryRepository {
     }
 
     @Override
-    public Country insert(Country country) throws DaoException {
+    public Country insert(@NotNull Country country) throws DaoException {
         try{
             final PreparedStatementCreator psc = new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -112,9 +115,10 @@ public class JdbcCountryRepository implements CountryRepository {
     }
 
     @Override
-    public Country update(long id, Country country) throws DaoException {
+    public Country update(long id, @NotNull Country country) throws DaoException {
         try{
             jdbcTemplate.update(UPDATE_SQL, country.getName(), id);
+            country.setId(id);
             return country;
         } catch (DataAccessException e){
             throw new DaoException(e);

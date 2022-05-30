@@ -33,4 +33,9 @@ public class CountryController {
     public boolean deleteCountry(@PathVariable("id") Long id) throws ServiceException{
         return  countryService.deleteCountry(id);
     }
+
+    @PutMapping("/{id}")
+    public Country updateCountry(@PathVariable("id") Long id, @RequestBody Country country) throws ServiceException{
+        return countryService.updateCountry(id,country);
+    }
 }

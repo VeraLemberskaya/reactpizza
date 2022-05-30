@@ -26,7 +26,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public List<MenuItem> getAllProducts() throws ServiceException {
+    public List<MenuItem> getAllMenuItems() throws ServiceException {
         try{
             return jdbcProductRepository.findAll();
         } catch ( DaoException e){
@@ -36,7 +36,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public MenuItem getProductById(long id) throws ServiceException {
+    public MenuItem getMenuItemById(long id) throws ServiceException {
         try{
             Optional<MenuItem> optionalProduct = jdbcProductRepository.findById(id);
             if(optionalProduct.isPresent()){
@@ -53,14 +53,13 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public List<MenuItem> getProductsByCategory(long categoryId) throws ServiceException {
+    public List<MenuItem> getMenuItemsByCategory(long categoryId) throws ServiceException {
         try{
-            //to do
-            // check id the category exists and throe resource not found exception
             boolean isCategoryExists = jdbcCategoryRepository.isCategoryExist(categoryId);
             if(isCategoryExists){
                 return jdbcProductRepository.findProductsByCategory(categoryId);
             } else {
+                log.error(String.format("Failed to find category with id: %s", categoryId));
                 throw new ResourceNotFoundException("Categories", "id",categoryId);
             }
 
@@ -71,9 +70,15 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public MenuItem createProduct(MenuItem product) throws ServiceException {
+    public MenuItem createMenuItem(MenuItem product) throws ServiceException {
         try{
-            return jdbcProductRepository.insert(product);
+            boolean isCategoryExists = jdbcCategoryRepository.isCategoryExist(product.getCategoryId());
+            if (isCategoryExists){
+                return jdbcProductRepository.insert(product);
+            } else{
+                log.error(String.format("Failed to find category with id: %s", product.getCategoryId()));
+                throw new ResourceNotFoundException("Categories", "id", product.getCategoryId());
+            }
         }catch(DaoException e){
             log.error("Failed to insert product in database", e);
             throw new ServiceException(e);
@@ -81,7 +86,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public MenuItem updateProduct(long id, MenuItem product) throws ServiceException {
+    public MenuItem updateMenuItem(long id, MenuItem product) throws ServiceException {
         try{
             Optional<MenuItem> optionalCategory = jdbcProductRepository.findById(id);
             if(optionalCategory.isPresent()){

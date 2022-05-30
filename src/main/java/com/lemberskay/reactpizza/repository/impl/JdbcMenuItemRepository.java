@@ -4,12 +4,14 @@ import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.MenuItem;
 import com.lemberskay.reactpizza.repository.MenuItemRepository;
 import com.lemberskay.reactpizza.repository.mapper.MenuItemRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcMenuItemRepository implements MenuItemRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -42,7 +45,7 @@ public class JdbcMenuItemRepository implements MenuItemRepository {
             """;
     private final String DELETE_SQL = """
             DELETE FROM menu_items
-            WHERE menu_item_id_id = ?
+            WHERE menu_item_id = ?
             """;
 
     private final String FIND_ALL_BY_CATEGORY_SQL = """
@@ -68,7 +71,7 @@ public class JdbcMenuItemRepository implements MenuItemRepository {
     }
 
     @Override
-    public MenuItem insert(MenuItem product) throws DaoException {
+    public MenuItem insert(@NotNull MenuItem product) throws DaoException {
         try{
             final PreparedStatementCreator psc = new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -120,9 +123,10 @@ public class JdbcMenuItemRepository implements MenuItemRepository {
     }
 
     @Override
-    public MenuItem update(long id, MenuItem product) throws DaoException {
+    public MenuItem update(long id, @NotNull MenuItem product) throws DaoException {
         try{
             jdbcTemplate.update(UPDATE_SQL, product.getName(), product.getPrice(), product.getDescription(), product.getImgURL(), product.getRating(), product.getCategoryId(), id);
+            product.setId(id);
             return product;
         } catch (DataAccessException e){
             throw new DaoException(e);

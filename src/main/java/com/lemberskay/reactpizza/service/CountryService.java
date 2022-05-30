@@ -11,4 +11,6 @@ public interface CountryService {
     List<Country> getAllCountries() throws ServiceException;
     Country createCountry(Country country) throws ServiceException;
     boolean deleteCountry(long id) throws ServiceException;
+
+    Country updateCountry(long id, Country country) throws ServiceException;
 }

@@ -4,12 +4,14 @@ import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.model.Category;
 import com.lemberskay.reactpizza.repository.CategoryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +20,7 @@ import java.sql.Statement;
 import java.util.*;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcCategoryRepository implements CategoryRepository {
     private final JdbcTemplate jdbcTemplate;
     private final CategoryRowMapper categoryRowMapper;
@@ -69,9 +72,10 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Category update(long id, Category category) throws DaoException {
+    public Category update(long id, @NotNull Category category) throws DaoException {
         try {
             jdbcTemplate.update(UPDATE_SQL, category.getName(), category.getImgURL(), id);
+            category.setId(id);
             return category;
         } catch (DataAccessException e) {
             throw new DaoException(e);
@@ -91,7 +95,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Category insert(Category category) throws DaoException {
+    public Category insert(@NotNull Category category) throws DaoException {
         try {
             final PreparedStatementCreator psc = new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {

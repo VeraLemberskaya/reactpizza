@@ -20,27 +20,27 @@ public class MenuItemController {
     }
 
     @GetMapping
-    public List<MenuItem> getAllProducts() throws ServiceException {
-        return menuItemService.getAllProducts();
+    public List<MenuItem> getAllMenuItems() throws ServiceException {
+        return menuItemService.getAllMenuItems();
     }
 
     @GetMapping(params = "category_id")
-    public List<MenuItem> getProductByCategory(@RequestParam("category_id") long categoryId) throws ResourceNotFoundException, ServiceException {
-        return menuItemService.getProductsByCategory(categoryId);
+    public List<MenuItem> getMenuItemsByCategory(@RequestParam("category_id") long categoryId) throws ResourceNotFoundException, ServiceException {
+        return menuItemService.getMenuItemsByCategory(categoryId);
     }
 
     @GetMapping("/{id}")
-    public MenuItem getProductById(@PathVariable("id") long productId) throws ResourceNotFoundException, ServiceException {
-        return menuItemService.getProductById(productId);
+    public MenuItem getMenuItemById(@PathVariable("id") long productId) throws ResourceNotFoundException, ServiceException {
+        return menuItemService.getMenuItemById(productId);
     }
 
     @PostMapping
-    public MenuItem createProduct(@RequestBody MenuItem product) throws ServiceException {
-        return menuItemService.createProduct(product);
+    public MenuItem createMenuItem(@RequestBody MenuItem product) throws ServiceException {
+        return menuItemService.createMenuItem(product);
     }
 
     @PutMapping("/{id}")
-    public MenuItem updateProduct(@PathVariable("id") Long productId, @RequestBody MenuItem productDetails) throws ResourceNotFoundException, ServiceException {
-        return menuItemService.updateProduct(productId, productDetails);
+    public MenuItem updateMenuItem(@PathVariable("id") Long productId, @RequestBody MenuItem productDetails) throws ResourceNotFoundException, ServiceException {
+        return menuItemService.updateMenuItem(productId, productDetails);
     }
 }

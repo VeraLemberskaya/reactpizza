@@ -10,6 +10,7 @@ import com.lemberskay.reactpizza.repository.impl.JdbcCountryRepository;
 import com.lemberskay.reactpizza.service.CountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    @Transactional
     public List<Country> getAllCountries() throws ServiceException {
         try{
             return jdbcCountryRepository.findAll();
@@ -35,6 +37,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    @Transactional
     public Country createCountry(Country country) throws ServiceException {
        try{
            Optional<Country> optionalCountry = jdbcCountryRepository.findByCountryName(country.getName());
@@ -50,6 +53,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    @Transactional
     public boolean deleteCountry(long id) throws ServiceException {
         try {
             Optional<Country> optionalCountry = jdbcCountryRepository.findById(id);
@@ -62,5 +66,20 @@ public class CountryServiceImpl implements CountryService {
             log.error("Failed to delete country from database", e);
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public Country updateCountry(long id, Country country) throws ServiceException {
+        try{
+            Optional<Country> optionalCountry = jdbcCountryRepository.findById(id);
+            if(optionalCountry.isEmpty()){
+                throw new ResourceNotFoundException("Countries","id",id);
+            }
+            return jdbcCountryRepository.update(id,country);
+        } catch (DaoException e){
+            throw new ServiceException(e);
+        }
+
     }
 }
