@@ -17,6 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/addresses")
 public class AddressController {
+
+    //ТАК ХОЧУ КУШАТЬ И СПАТЬ
+    //А ЕЩЁ ПИСАТЬ ФРОНТ, ЛЮБЛБЮ ФРОНТ...
+    //МОЙ ЛЮБИМЫЙ РЕАКТ СКУЧАЕТ БЕЗ МЕНЯ (((
     private final AddressService addressService;
     public AddressController(AddressService addressService){
         this.addressService = addressService;

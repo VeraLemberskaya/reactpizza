@@ -8,6 +8,7 @@ import com.lemberskay.reactpizza.repository.impl.JdbcCategoryRepository;
 import com.lemberskay.reactpizza.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public List<Category> getAddToOrderCategories () throws ServiceException{
         List<Long> addToOrderCategoryIds = Stream.of(2L,3L,4L)
                 .collect(Collectors.toList());
@@ -94,8 +96,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category createCategory(Category category) throws ServiceException {
         try{
+            log.info("Category is in process of creating...");
             return jdbcCategoryRepository.insert(category);
         }catch(DaoException e){
             log.error("Failed to insert category into database", e);
@@ -104,10 +108,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category updateCategory(long id, Category category) throws ServiceException {
         try{
             Optional<Category> optionalCategory = jdbcCategoryRepository.findById(id);
             if(optionalCategory.isPresent()){
+                log.info("Category is in process of updating...");
                 return jdbcCategoryRepository.update(id, category);
             }
             else {

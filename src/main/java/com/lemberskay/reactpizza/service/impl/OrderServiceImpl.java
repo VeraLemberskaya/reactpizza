@@ -11,7 +11,9 @@ import com.lemberskay.reactpizza.repository.impl.JdbcUserRepository;
 import com.lemberskay.reactpizza.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<Order> getOrdersByUser(String userName) throws ServiceException {
         try{
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(userName);
@@ -68,5 +71,11 @@ public class OrderServiceImpl implements OrderService {
             log.error(String.format("Failed to get order by username: %s from database", userName), e);
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public Order createOrder(Order order) throws ServiceException {
+        order.setDate(LocalDate.now());
+    //ВЕРА КУПИ КОФЕ И ЧЕГО-НИБУДЬ СЛАДКОГО ПЖ
     }
 }

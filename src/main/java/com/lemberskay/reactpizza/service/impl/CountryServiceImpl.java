@@ -26,7 +26,6 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    @Transactional
     public List<Country> getAllCountries() throws ServiceException {
         try{
             return jdbcCountryRepository.findAll();
@@ -45,6 +44,7 @@ public class CountryServiceImpl implements CountryService {
                log.error(String.format("Country with name: '%s' already exists", country.getName()));
                throw new AlreadyExistsException("Country", "name", country.getName());
            }
+           log.info("Country is in process of creating");
            return jdbcCountryRepository.insert(country);
        } catch (DaoException e){
            log.error("Failed to insert country into database", e);
@@ -61,6 +61,7 @@ public class CountryServiceImpl implements CountryService {
                 log.error(String.format("Failed to get country with id: %s", id));
                 throw new ResourceNotFoundException("Countries","id",id);
             }
+            log.info("Country is in process of deleting...");
             return jdbcCountryRepository.remove(id);
         } catch (DaoException e){
             log.error("Failed to delete country from database", e);
@@ -76,6 +77,7 @@ public class CountryServiceImpl implements CountryService {
             if(optionalCountry.isEmpty()){
                 throw new ResourceNotFoundException("Countries","id",id);
             }
+            log.info("Country is in process of updating");
             return jdbcCountryRepository.update(id,country);
         } catch (DaoException e){
             throw new ServiceException(e);

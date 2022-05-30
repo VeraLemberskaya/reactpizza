@@ -36,4 +36,9 @@ public class OrderController {
         String userName = UserEncoder.getUserName(authorization);
         return orderService.getOrdersByUser(userName);
     }
+
+    @PostMapping()
+    public Order createOrder(@RequestBody Order order) throws ServiceException{
+
+    }
 }

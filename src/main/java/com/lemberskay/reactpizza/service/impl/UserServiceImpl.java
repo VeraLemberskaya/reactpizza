@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,6 @@ public class UserServiceImpl implements UserService {
             return optionalUser.get();
         } catch(DaoException e){
             log.error(String.format("Failed to get user with username: %s from database", username), e);
-            //something
         }
         return new User();
     }
@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User getUserById(long id) throws ServiceException {
         try{
             Optional<User> optionalUser = jdbcUserRepository.findById(id);
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User createUser(User user) throws ServiceException {
         try{
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(user.getUsername());
@@ -80,6 +82,7 @@ public class UserServiceImpl implements UserService {
            }
            user.setRole(User.Role.ROLE_USER);
            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+           log.info("User is in process of creating...");
            return jdbcUserRepository.insert(user);
         } catch(DaoException e){
             log.error("Failed to insert user into database");
@@ -93,9 +96,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean deleteUser(long userId) throws ServiceException {
         try{
             if(jdbcUserRepository.findById(userId).isPresent()){
+                log.info("User is in process of deleting...");
                 return jdbcUserRepository.remove(userId);
             }
             else {

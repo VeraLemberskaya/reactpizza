@@ -9,6 +9,7 @@ import com.lemberskay.reactpizza.repository.impl.JdbcMenuItemRepository;
 import com.lemberskay.reactpizza.service.MenuItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,10 +71,12 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
+    @Transactional
     public MenuItem createMenuItem(MenuItem product) throws ServiceException {
         try{
             boolean isCategoryExists = jdbcCategoryRepository.isCategoryExist(product.getCategoryId());
             if (isCategoryExists){
+                log.info("Menu item is in process of creating...");
                 return jdbcProductRepository.insert(product);
             } else{
                 log.error(String.format("Failed to find category with id: %s", product.getCategoryId()));
@@ -86,10 +89,12 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
+    @Transactional
     public MenuItem updateMenuItem(long id, MenuItem product) throws ServiceException {
         try{
             Optional<MenuItem> optionalCategory = jdbcProductRepository.findById(id);
             if(optionalCategory.isPresent()){
+                log.info("Menu item is in process of updating...");
                 return jdbcProductRepository.update(id, product);
             }
             else {
