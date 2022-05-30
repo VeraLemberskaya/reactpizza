@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 import com.lemberskay.reactpizza.repository.MenuItemRepository;
 import com.lemberskay.reactpizza.repository.mapper.MenuItemRowMapper;
 import org.jetbrains.annotations.NotNull;

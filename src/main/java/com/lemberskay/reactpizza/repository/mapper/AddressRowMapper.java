@@ -1,7 +1,6 @@
 package com.lemberskay.reactpizza.repository.mapper;
 
-import com.lemberskay.reactpizza.model.Address;
-import com.lemberskay.reactpizza.model.Country;
+import com.lemberskay.reactpizza.model.entity.Address;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

@@ -2,12 +2,10 @@ package com.lemberskay.reactpizza.controller;
 
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.MenuItem;
-import com.lemberskay.reactpizza.model.Order;
+import com.lemberskay.reactpizza.model.dto.OrderDto;
+import com.lemberskay.reactpizza.model.entity.Order;
 import com.lemberskay.reactpizza.service.OrderService;
 import com.lemberskay.reactpizza.util.UserEncoder;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class OrderController {
     }
 
     @PostMapping()
-    public Order createOrder(@RequestBody Order order) throws ServiceException{
-
+    public Order createOrder(@RequestBody OrderDto orderDto) throws ServiceException{
+        return orderService.createOrder(orderDto);
     }
 }

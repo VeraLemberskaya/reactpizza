@@ -1,15 +1,19 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.Order;
+import com.lemberskay.reactpizza.model.entity.Order;
+import com.lemberskay.reactpizza.model.entity.OrderedItem;
 import com.lemberskay.reactpizza.repository.OrderRepository;
 import com.lemberskay.reactpizza.repository.mapper.OrderRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +64,12 @@ public class JdbcOrderRepository implements OrderRepository {
            INNER JOIN menu_items as m ON m.menu_item_id = om.menu_item_id
            WHERE a.user_id = ?
            """;
-
+    private final String INSERT_ORDER_SQL = """
+            INSERT INTO orders (order_date, address_id) VALUES (?,?)
+            """;
+    private final String INSERT_ORDER_MENU_ITEM_SQL = """
+            INSERT INTO order_menu_item (order_id, menu_item_id, quantity) VALUES (?,?,?)
+            """;
 
     public JdbcOrderRepository(JdbcTemplate jdbcTemplate, OrderRowMapper orderRowMapper){
         this.jdbcTemplate = jdbcTemplate;
@@ -81,7 +90,33 @@ public class JdbcOrderRepository implements OrderRepository {
 
     @Override
     public Order insert(Order order) throws DaoException {
-        return null;
+        try {
+            final PreparedStatementCreator psc = new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                    final PreparedStatement ps = connection.prepareStatement( INSERT_ORDER_SQL,
+                            Statement.RETURN_GENERATED_KEYS);
+
+                    ps.setDate(1, Date.valueOf(order.getDate()));
+                    ps.setLong(2, order.getAddress().getId());
+                    return ps;
+                }
+            };
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(psc, keyHolder);
+
+            long insertedId = keyHolder.getKey().longValue();
+            order.setId(insertedId);
+
+            for (OrderedItem item: order.getOrderedItems()){
+                jdbcTemplate.update(INSERT_ORDER_MENU_ITEM_SQL, order.getId(), item.getMenuItem().getId(), item.getQuantity());
+            }
+
+            return order;
+        } catch (DataAccessException e) {
+            throw new DaoException(e);
+        }
     }
 
     @Override

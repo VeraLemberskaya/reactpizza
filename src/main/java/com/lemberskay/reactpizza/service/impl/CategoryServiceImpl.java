@@ -3,7 +3,7 @@ package com.lemberskay.reactpizza.service.impl;
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Category;
+import com.lemberskay.reactpizza.model.entity.Category;
 import com.lemberskay.reactpizza.repository.impl.JdbcCategoryRepository;
 import com.lemberskay.reactpizza.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;

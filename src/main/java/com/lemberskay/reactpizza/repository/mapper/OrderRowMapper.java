@@ -1,9 +1,8 @@
 package com.lemberskay.reactpizza.repository.mapper;
 
-import com.lemberskay.reactpizza.model.Address;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.MenuItem;
-import com.lemberskay.reactpizza.model.Order;
+import com.lemberskay.reactpizza.model.entity.Address;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
+import com.lemberskay.reactpizza.model.entity.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;

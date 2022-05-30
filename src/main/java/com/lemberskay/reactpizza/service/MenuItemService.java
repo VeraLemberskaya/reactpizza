@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.service;
 
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 
 import java.util.List;
 

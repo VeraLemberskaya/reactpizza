@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Address;
+import com.lemberskay.reactpizza.model.entity.Address;
 import com.lemberskay.reactpizza.repository.AddressRepository;
 import com.lemberskay.reactpizza.repository.mapper.AddressRowMapper;
 import org.jetbrains.annotations.NotNull;

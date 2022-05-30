@@ -1,5 +1,6 @@
-package com.lemberskay.reactpizza.model;
+package com.lemberskay.reactpizza.model.entity;
 
+import com.lemberskay.reactpizza.model.entity.AbstractEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -8,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Country extends AbstractEntity{
+public class Country extends AbstractEntity {
     private String name;
 }

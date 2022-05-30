@@ -1,4 +1,4 @@
-package com.lemberskay.reactpizza.model;
+package com.lemberskay.reactpizza.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,7 +13,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends AbstractEntity{
+public class Category extends AbstractEntity {
     private String name;
     private String imgURL;
     private List<MenuItem> products;

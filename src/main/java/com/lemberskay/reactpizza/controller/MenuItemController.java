@@ -2,11 +2,9 @@ package com.lemberskay.reactpizza.controller;
 
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 import com.lemberskay.reactpizza.service.MenuItemService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 

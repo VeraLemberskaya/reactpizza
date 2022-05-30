@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.repository.impl;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Category;
+import com.lemberskay.reactpizza.model.entity.Category;
 import com.lemberskay.reactpizza.repository.CategoryRepository;
 import com.lemberskay.reactpizza.repository.mapper.CategoryRowMapper;
 import org.jetbrains.annotations.NotNull;

@@ -1,9 +1,7 @@
 package com.lemberskay.reactpizza.repository;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.User;
-import org.springframework.stereotype.Repository;
+import com.lemberskay.reactpizza.model.entity.User;
 
 import java.util.Optional;
 

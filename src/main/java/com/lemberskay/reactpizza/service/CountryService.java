@@ -1,9 +1,7 @@
 package com.lemberskay.reactpizza.service;
 
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.Country;
-import com.lemberskay.reactpizza.service.impl.CountryServiceImpl;
+import com.lemberskay.reactpizza.model.entity.Country;
 
 import java.util.List;
 

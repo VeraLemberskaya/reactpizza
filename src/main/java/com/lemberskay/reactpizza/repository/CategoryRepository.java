@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.repository;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Category;
+import com.lemberskay.reactpizza.model.entity.Category;
 
 import java.util.Optional;
 

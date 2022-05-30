@@ -1,10 +1,9 @@
 package com.lemberskay.reactpizza.repository.mapper;
 
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.Category;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;

@@ -1,6 +1,6 @@
 package com.lemberskay.reactpizza.repository.mapper;
 
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

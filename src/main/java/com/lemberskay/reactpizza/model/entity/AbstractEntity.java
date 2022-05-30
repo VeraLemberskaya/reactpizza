@@ -1,4 +1,4 @@
-package com.lemberskay.reactpizza.model;
+package com.lemberskay.reactpizza.model.entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

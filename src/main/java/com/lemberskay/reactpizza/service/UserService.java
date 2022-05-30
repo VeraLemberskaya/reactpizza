@@ -1,8 +1,7 @@
 package com.lemberskay.reactpizza.service;
 
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.User;
+import com.lemberskay.reactpizza.model.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;

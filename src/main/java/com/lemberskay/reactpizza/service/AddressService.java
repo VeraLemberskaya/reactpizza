@@ -2,7 +2,7 @@ package com.lemberskay.reactpizza.service;
 
 import com.lemberskay.reactpizza.exception.NotAuthorizedException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Address;
+import com.lemberskay.reactpizza.model.entity.Address;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.lemberskay.reactpizza.model;
+package com.lemberskay.reactpizza.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order extends AbstractEntity{
+public class Order extends AbstractEntity {
 
     private LocalDate date;
     private Address address;

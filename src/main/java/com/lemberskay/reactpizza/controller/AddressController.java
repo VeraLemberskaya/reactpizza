@@ -1,14 +1,9 @@
 package com.lemberskay.reactpizza.controller;
 
-import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.Address;
-import com.lemberskay.reactpizza.model.Order;
+import com.lemberskay.reactpizza.model.entity.Address;
 import com.lemberskay.reactpizza.service.AddressService;
-import com.lemberskay.reactpizza.util.UserEncoder;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.support.SecurityContextProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 

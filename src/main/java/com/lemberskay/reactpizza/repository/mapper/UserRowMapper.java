@@ -1,7 +1,6 @@
 package com.lemberskay.reactpizza.repository.mapper;
 
-import com.lemberskay.reactpizza.model.Category;
-import com.lemberskay.reactpizza.model.User;
+import com.lemberskay.reactpizza.model.entity.User;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

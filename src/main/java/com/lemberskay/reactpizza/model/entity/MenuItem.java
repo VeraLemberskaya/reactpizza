@@ -1,5 +1,6 @@
-package com.lemberskay.reactpizza.model;
+package com.lemberskay.reactpizza.model.entity;
 
+import com.lemberskay.reactpizza.model.entity.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuItem extends AbstractEntity{
+public class MenuItem extends AbstractEntity {
 
     private BigDecimal price;
     private String description;

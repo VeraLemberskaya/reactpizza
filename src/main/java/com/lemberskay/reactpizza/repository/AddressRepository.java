@@ -1,7 +1,7 @@
 package com.lemberskay.reactpizza.repository;
 
 import com.lemberskay.reactpizza.exception.DaoException;
-import com.lemberskay.reactpizza.model.Address;
+import com.lemberskay.reactpizza.model.entity.Address;
 
 import java.util.List;
 

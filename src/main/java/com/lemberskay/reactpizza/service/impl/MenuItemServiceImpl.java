@@ -3,7 +3,7 @@ package com.lemberskay.reactpizza.service.impl;
 import com.lemberskay.reactpizza.exception.DaoException;
 import com.lemberskay.reactpizza.exception.ResourceNotFoundException;
 import com.lemberskay.reactpizza.exception.ServiceException;
-import com.lemberskay.reactpizza.model.MenuItem;
+import com.lemberskay.reactpizza.model.entity.MenuItem;
 import com.lemberskay.reactpizza.repository.impl.JdbcCategoryRepository;
 import com.lemberskay.reactpizza.repository.impl.JdbcMenuItemRepository;
 import com.lemberskay.reactpizza.service.MenuItemService;
