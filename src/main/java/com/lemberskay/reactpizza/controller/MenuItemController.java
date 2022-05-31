@@ -41,4 +41,8 @@ public class MenuItemController {
     public MenuItem updateMenuItem(@PathVariable("id") Long productId, @RequestBody MenuItem productDetails) throws ResourceNotFoundException, ServiceException {
         return menuItemService.updateMenuItem(productId, productDetails);
     }
+    @DeleteMapping("/{id}")
+    public boolean deleteMenuItem(@PathVariable("id") Long id) throws ServiceException{
+        return menuItemService.deleteMenuItem(id);
+    }
 }

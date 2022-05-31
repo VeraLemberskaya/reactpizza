@@ -27,25 +27,31 @@ public class JdbcAddressRepository implements AddressRepository {
     private final JdbcTemplate jdbcTemplate;
     private final AddressRowMapper addressRowMapper;
     private final String FIND_ALL_SQL = """
-            SELECT address_id, street_name, street_number, city, user_id, country_id
-            FROM addresses
+            SELECT a.address_id, a.street_name, a.street_number, a.city, a.user_id, c.country_id, c.name as country_name
+            FROM addresses as a
+            INNER JOIN countries as c
+            ON a.country_id = c.country_id
             """;
     private final String FIND_BY_ID_SQL = """
-           SELECT address_id, street_name, street_number, city, user_id, country_id
-            FROM addresses
-            WHERE address_id = ?
-           """;
+           SELECT a.address_id, a.street_name, a.street_number, a.city, a.user_id, c.country_id, c.name as country_name
+            FROM addresses as a
+            INNER JOIN countries as c
+            ON a.country_id = c.country_id
+            WHERE a.address_id = ?
+            """;
     private final String FIND_BY_USER_ID_SQL = """
-          SELECT address_id, street_name, street_number, city, user_id, country_id
-          FROM addresses
-           WHERE user_id = ?
-          """;
+          SELECT a.address_id, a.street_name, a.street_number, a.city, a.user_id, c.country_id, c.name as country_name
+            FROM addresses as a
+            INNER JOIN countries as c
+            ON a.country_id = c.country_id
+            WHERE a.user_id = ?
+           """;
     private final String INSERT_SQL = """
             INSERT INTO addresses (street_name, street_number, city, country_id, user_id)
             VALUES (?, ?, ?, ?,?);
             """;
     private final String UPDATE_SQL = """
-            UPDATE addresses SET street_name = ?, street_number = ?, city = ?, country_id = ? user_id = ?
+            UPDATE addresses SET street_name = ?, street_number = ?, city = ?, country_id = ?, user_id = ?
             WHERE address_id = ?
             """;
     private final String DELETE_SQL = """
@@ -79,7 +85,7 @@ public class JdbcAddressRepository implements AddressRepository {
                     ps.setString(1, address.getStreetName());
                     ps.setInt(2, address.getStreetNumber());
                     ps.setString(3, address.getCity());
-                    ps.setLong(4, address.getCountryId());
+                    ps.setLong(4, address.getCountry().getId());
                     ps.setLong(5, address.getUserId());
 
                     return ps;
@@ -121,7 +127,7 @@ public class JdbcAddressRepository implements AddressRepository {
     @Override
     public Address update(long id, @NotNull Address address) throws DaoException {
         try{
-            jdbcTemplate.update(UPDATE_SQL, address.getStreetName(), address.getStreetNumber(), address.getCity(), address.getCountryId(), address.getUserId(), id);
+            jdbcTemplate.update(UPDATE_SQL, address.getStreetName(), address.getStreetNumber(), address.getCity(), address.getCountry().getId(), address.getUserId(), id);
             address.setId(id);
             return address;
         } catch (DataAccessException e){

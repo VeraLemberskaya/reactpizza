@@ -107,4 +107,18 @@ public class MenuItemServiceImpl implements MenuItemService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    @Transactional
+    public boolean deleteMenuItem(long id) throws ServiceException {
+        try{
+            Optional<MenuItem> optionalMenuItem = jdbcProductRepository.findById(id);
+            if(optionalMenuItem.isEmpty()){
+                throw new ResourceNotFoundException("Menu","id",id);
+            }
+            return jdbcProductRepository.remove(id);
+        } catch (DaoException e){
+            throw new ServiceException(e);
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
            SELECT m.menu_item_id, m.name as menu_item_name, m.description, m.price, m.img as menu_item_img, m.rating, c.category_id, c.name as category_name, c.img as category_img
             FROM menu_items AS m
             RIGHT JOIN categories as c ON m.category_id = c.category_id
-            WHERE c.category_name = ?;
+            WHERE c.name = ?;
            """;
     private final String INSERT_SQL = """
             INSERT into categories (name, img) VALUES (?, ?)

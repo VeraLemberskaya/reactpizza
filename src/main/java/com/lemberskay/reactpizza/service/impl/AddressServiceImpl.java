@@ -44,7 +44,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<Address> getAddressesByUser(String userName) throws ServiceException {
+    public List<Address> getAddressesByUser() throws ServiceException {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         try{
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(userName);
             if(optionalUser.isPresent()){
@@ -68,16 +69,18 @@ public class AddressServiceImpl implements AddressService {
             String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(userName);
-            Optional<Country> optionalCountry = jdbcCountryRepository.findById(address.getCountryId());
+            Optional<Country> optionalCountry = jdbcCountryRepository.findByCountryName(address.getCountry().getName());
 
             if(optionalUser.isPresent()){
                 if(optionalCountry.isPresent()){
+                    address.setCountry(optionalCountry.get());
+                    address.setUserId(optionalUser.get().getId());
                     log.info("Address is in process of creating...");
                     return jdbcAddressRepository.insert(address);
                 } else{
 
-                    log.error(String.format("Failed to find country with id: %s", address.getCountryId()));
-                    throw new ResourceNotFoundException("Country","id",address.getCountryId());
+                    log.error(String.format("Failed to find country with id: %s", address.getCountry().getId()));
+                    throw new ResourceNotFoundException("Country","id",address.getCountry().getName());
                 }
 
             } else {
@@ -101,15 +104,16 @@ public class AddressServiceImpl implements AddressService {
             String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
             Optional<User> optionalUser = jdbcUserRepository.findByUsername(userName);
-            Optional<Country> optionalCountry = jdbcCountryRepository.findById(address.getCountryId());
+            Optional<Country> optionalCountry = jdbcCountryRepository.findByCountryName(address.getCountry().getName());
             if(optionalUser.isPresent()){
                 if(optionalCountry.isPresent()){
+                    address.setCountry(optionalCountry.get());
                     address.setUserId(optionalUser.get().getId());
                     log.info("Address is in process of updating...");
                     return jdbcAddressRepository.update(id, address);
                 } else{
-                    log.error(String.format("Failed to find country with id: %s", address.getCountryId()));
-                    throw new ResourceNotFoundException("Country","id",address.getCountryId());
+                    log.error(String.format("Failed to find country with id: %s", address.getCountry().getId()));
+                    throw new ResourceNotFoundException("Country","name",address.getCountry().getName());
                 }
             } else {
                 log.error(String.format("Failed to find user with id: %s", address.getUserId()));

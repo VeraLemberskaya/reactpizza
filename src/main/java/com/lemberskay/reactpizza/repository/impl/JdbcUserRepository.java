@@ -46,7 +46,7 @@ public class JdbcUserRepository implements UserRepository {
             WHERE user_id = ?
             """;
     private final String UPDATE_SQL = """
-            UPDATE users SET user_name = ?, password = ?, user_role = ?
+            UPDATE users SET user_name = ?, password = ?
             WHERE user_id = ?
             """;
 
@@ -126,7 +126,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User update(long id, @NotNull User user) throws DaoException {
         try {
-            jdbcTemplate.update(UPDATE_SQL, user.getLogin(), user.getPassword(), user.getRole(), id);
+            jdbcTemplate.update(UPDATE_SQL, user.getLogin(), user.getPassword(), id);
             user.setId(id);
             return user;
         } catch (DataAccessException e) {

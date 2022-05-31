@@ -55,7 +55,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    public User getUserByLogin(String userName) throws ServiceException {
+        try{
+            Optional<User> optionalUser = jdbcUserRepository.findByUsername(userName);
+            if(optionalUser.isEmpty()){
+                throw new ResourceNotFoundException("Users","username",userName);
+            }
+            return optionalUser.get();
+        } catch (DaoException e){
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public User getUserById(long id) throws ServiceException {
         try{
             Optional<User> optionalUser = jdbcUserRepository.findById(id);
@@ -68,6 +80,8 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(e);
         }
     }
+
+
 
     @Override
     @Transactional
@@ -88,8 +102,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(long id, User user) throws ServiceException {
-        return null;
+        try{
+            Optional<User> optionalUser = jdbcUserRepository.findById(id);
+            if(optionalUser.isEmpty()){
+                throw new ResourceNotFoundException("Users","id",id);
+            }
+            if(user.getLogin()== null){
+                user.setLogin(optionalUser.get().getLogin());
+            }
+            if(user.getPassword()== null){
+                user.setPassword(optionalUser.get().getPassword());
+            }
+            if(user.getRole() == null){
+                user.setRole(optionalUser.get().getRole());
+            }
+            return jdbcUserRepository.update(id, user);
+        } catch (DaoException e){
+            throw new ServiceException(e);
+        }
     }
 
     @Override

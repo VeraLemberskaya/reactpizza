@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AddressService {
     List<Address> getAllAddresses() throws ServiceException;
-    List<Address> getAddressesByUser(String userName) throws ServiceException;
+    List<Address> getAddressesByUser() throws ServiceException;
 
     Address createAddress(Address address) throws ServiceException;
 

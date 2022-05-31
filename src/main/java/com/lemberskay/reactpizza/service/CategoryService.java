@@ -17,4 +17,6 @@ public interface CategoryService {
     Category createCategory(Category category) throws ServiceException;
 
 Category updateCategory(long id, Category category) throws ServiceException;
+
+boolean deleteCategory(Long id) throws ServiceException;
 }

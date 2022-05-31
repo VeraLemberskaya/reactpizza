@@ -11,4 +11,6 @@ public interface MenuItemService {
     List<MenuItem> getMenuItemsByCategory(long category_id) throws ServiceException;
     MenuItem createMenuItem(MenuItem product) throws ServiceException;
     MenuItem updateMenuItem(long id, MenuItem product) throws ServiceException;
+
+    boolean deleteMenuItem(long id) throws ServiceException;
 }

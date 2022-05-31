@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserService extends UserDetailsService{
     List<User> getAllUsers() throws ServiceException;
 
+    User getUserByLogin(String userName) throws ServiceException;
     User getUserById(long id) throws  ServiceException;
 
     User createUser(User user) throws ServiceException;

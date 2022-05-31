@@ -34,15 +34,25 @@ public class CategoryController {
             return categoryService.getCategoryById(categoryId);
     }
 
+    @GetMapping(params = "name")
+    public Category getCategoryByName(@RequestParam("name") String name) throws ServiceException{
+        return  categoryService.getCategoryByName(name);
+    }
+
     @PostMapping()
-    public Category createCategory(@Valid @RequestBody Category category)  throws ServiceException{
+    public Category createCategory( @RequestBody Category category)  throws ServiceException{
             return categoryService.createCategory(category);
     }
 
     @PutMapping("/{id}")
     public Category updateCategory(@PathVariable("id") Long categoryId,
-                           @Valid @RequestBody Category categoryDetails)  throws ServiceException, ResourceNotFoundException{
+                            @RequestBody Category categoryDetails)  throws ServiceException, ResourceNotFoundException{
 
             return categoryService.updateCategory(categoryId, categoryDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteCategory(@PathVariable("id") Long id) throws ServiceException{
+        return categoryService.deleteCategory(id);
     }
 }

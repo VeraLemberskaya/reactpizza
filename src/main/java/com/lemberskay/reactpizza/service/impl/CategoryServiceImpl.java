@@ -126,4 +126,18 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    @Transactional
+    public boolean deleteCategory(Long id) throws ServiceException {
+        try{
+            boolean isCategoryExists =  jdbcCategoryRepository.isCategoryExist(id);
+            if(!isCategoryExists){
+                throw new ResourceNotFoundException("Categories","id",id);
+            }
+            return jdbcCategoryRepository.remove(id);
+        } catch (DaoException e){
+            throw new ServiceException(e);
+        }
+    }
 }
